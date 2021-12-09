@@ -1,5 +1,5 @@
 use std::fmt::{ self, Debug, Formatter };
-use super::*;
+use super::hashable::*;
 
 pub struct Block {
     pub index: u32,
@@ -30,4 +30,22 @@ impl Debug for Block {
         write!(f, "Block [{}]: at: {}, hash: {}, with payload: {}, nonce: {}.", &self.index, &self.timestamp, &hex::encode(&self.hash), &self.payload.len(), &self.nonce,
         )
     }
+}
+
+// Hashes
+impl Hashable for Block {
+    fn bytes(&self) -> Vec<u8> {
+        let mut bytes =  vec![];
+        bytes.extend(u32_bytes(&self.index));
+        bytes.extend(u128_bytes(&self.timestamp));
+        bytes.extend(&self.prev_block_hash);
+        bytes.extend(u64_bytes(&self.nonce));
+        bytes.extend(self.payload.as_bytes());
+
+        bytes
+    }
+} 
+
+pub fn check_difficulty(hash: &Vec<u8>, difficulty: u128) -> bool {
+    difficulty > difficulty_bytes_as_u128(&hash)
 }
