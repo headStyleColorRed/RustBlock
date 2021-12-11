@@ -6,13 +6,18 @@ pub struct Blockchain {
 }
 
 impl Blockchain {
+    pub fn add_new_block(&mut self, block: Block) {
+        println!("Created block {:?}", block);
+        self.blocks.push(block);
+    }
+
     pub fn verify(&self) -> Result<(), &str> {
         for (index, block) in self.blocks.iter().enumerate() {
+            // Genesis block
+            if index == 0 { continue }
             // Previous block
             let previous_block = &self.blocks[index - 1];
 
-            // Genesis block
-            if index == 0 { return Ok(()) }
             // Check index
             if index as u32 != block.index { return Err("Block index is not correct") };
             // Check difficulty

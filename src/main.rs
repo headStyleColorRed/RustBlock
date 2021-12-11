@@ -39,10 +39,8 @@ fn main() {
         // Save block's hash
         previous_hash = block.hash();
 
-        println!("Created block {:?}", block);
-
         match blockchain.verify() {
-            Ok(_) => blockchain.blocks.push(block),
+            Ok(_) => blockchain.add_new_block(block),
             Err(err) => panic!("{}", err),
         };
     }
