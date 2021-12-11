@@ -8,11 +8,12 @@ pub struct Block {
     pub prev_block_hash: Vec<u8>,
     pub nonce: u64,
     pub payload: String,
+    pub difficulty: u128,
 }
 
 // Constructor
 impl Block {
-    pub fn new(index: u32, timestamp: u128, prev_block_hash: Vec<u8>, nonce: u64, payload: String) -> Self {
+    pub fn new(index: u32, timestamp: u128, prev_block_hash: Vec<u8>, nonce: u64, payload: String, difficulty: u128) -> Self {
         Block {
             index,
             timestamp,
@@ -20,6 +21,20 @@ impl Block {
             prev_block_hash,
             nonce,
             payload,
+            difficulty,
+        }
+    }
+
+    pub fn mine(&mut self) {
+        for nonce_attemp in 0..(u64::max_value()) {
+            self.nonce = nonce_attemp;
+            let hash = self.hash();
+            if check_difficulty(&hash, self.difficulty) {
+                self.hash = hash;
+                return;
+            } else {
+                
+            }
         }
     }
 }
@@ -41,11 +56,13 @@ impl Hashable for Block {
         bytes.extend(&self.prev_block_hash);
         bytes.extend(u64_bytes(&self.nonce));
         bytes.extend(self.payload.as_bytes());
+        bytes.extend(u128_bytes(&self.difficulty));
 
         bytes
     }
 } 
 
+// Mining
 pub fn check_difficulty(hash: &Vec<u8>, difficulty: u128) -> bool {
     difficulty > difficulty_bytes_as_u128(&hash)
 }
