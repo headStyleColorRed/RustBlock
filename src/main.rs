@@ -18,18 +18,15 @@ fn main() {
     println!("Created genesis block {:?}", block);
 
     // Create blockchain
-    let mut blockchain = Blockchain {
-        blocks: vec![block],
-    };
+    let mut blockchain = Blockchain { blocks: vec![block] };
 
     // Last block hash
     let genesis_block: &Block = blockchain.blocks.first().expect("Error getting genesis block hash");
     let mut previous_hash: Vec<u8> = genesis_block.hash.clone();
 
     // Start blockchain loop
-    for index in 1..=10 {
-        // Previous hash
-
+    let mut index = 1;
+    loop {
         // Create block
         let mut block = Block::new(index, now(), previous_hash, 26661, String::from(format!("Block nº: {}", index)), difficulty);
 
@@ -43,6 +40,8 @@ fn main() {
             Ok(_) => blockchain.add_new_block(block),
             Err(err) => panic!("{}", err),
         };
+
+        index += 1
     }
 }
 

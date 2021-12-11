@@ -32,8 +32,6 @@ impl Block {
             if self.check_difficulty(&hash, self.difficulty) {
                 self.hash = hash;
                 return;
-            } else {
-
             }
         }
     }
