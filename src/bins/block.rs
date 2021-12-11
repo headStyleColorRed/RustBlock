@@ -29,21 +29,24 @@ impl Block {
         for nonce_attemp in 0..(u64::max_value()) {
             self.nonce = nonce_attemp;
             let hash = self.hash();
-            if check_difficulty(&hash, self.difficulty) {
+            if self.check_difficulty(&hash, self.difficulty) {
                 self.hash = hash;
                 return;
             } else {
-                
+
             }
         }
+    }
+
+    pub fn check_difficulty(&self, hash: &Vec<u8>, difficulty: u128) -> bool {
+        difficulty > difficulty_bytes_as_u128(&hash)
     }
 }
 
 // Debuggin print implementation for Block
 impl Debug for Block {
     fn fmt (&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Block [{}]: at: {}, hash: {}, with payload: {}, nonce: {}.", &self.index, &self.timestamp, &hex::encode(&self.hash), &self.payload.len(), &self.nonce,
-        )
+        write!(f, "Block [{}]: at: {}, hash: {}, with payload: {}, nonce: {}.", &self.index, &self.timestamp, &hex::encode(&self.hash), &self.payload.len(), &self.nonce)
     }
 }
 
@@ -61,8 +64,3 @@ impl Hashable for Block {
         bytes
     }
 } 
-
-// Mining
-pub fn check_difficulty(hash: &Vec<u8>, difficulty: u128) -> bool {
-    difficulty > difficulty_bytes_as_u128(&hash)
-}

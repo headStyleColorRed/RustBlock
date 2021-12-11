@@ -41,8 +41,10 @@ fn main() {
 
         println!("Created block {:?}", block);
 
-        // Add block to blockchain
-        blockchain.blocks.push(block);
+        match blockchain.verify() {
+            Ok(_) => blockchain.blocks.push(block),
+            Err(err) => panic!("{}", err),
+        };
     }
 }
 
